@@ -1,8 +1,7 @@
-package com.study.market.repository;
+package com.study.market.member.repository;
 
-import com.study.market.domain.Member;
+import com.study.market.member.domain.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 

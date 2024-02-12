@@ -1,20 +1,20 @@
-package com.study.market.domain;
+package com.study.market.member.domain.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.study.market.member.domain.UserRole;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@Table(name="member")
+@NoArgsConstructor(access = AccessLevel.PROTECTED) //없으면 레포지토리 테스트 실패
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
     private long id;
     private String name;
     private String email;

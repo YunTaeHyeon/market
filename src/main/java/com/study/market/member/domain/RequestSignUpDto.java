@@ -1,24 +1,10 @@
-package com.study.market.domain;
+package com.study.market.member.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class RequestSignUpDto {
-    private String name;
-    private String email;
-    private String password;
-}
-
-/*
-@Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RequestSignUpDto {
     private String name;
     private String email;
@@ -26,10 +12,22 @@ public class RequestSignUpDto {
 
     @Builder
     public RequestSignUpDto(String name, String email, String password){
-        this.name=name;
-        this.email=email;
-        this.password=password;
+        this.name = name;
+        this.email = email;
+        this.password = password;
     }
+}
+
+/*
+@Getter
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
+public class RequestSignUpDto {
+    private String name;
+    private String email;
+    private String password;
+
 }
 */
 

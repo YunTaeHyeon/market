@@ -1,8 +1,10 @@
 package com.study.market.manageMember;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.study.market.domain.*;
-import com.study.market.service.MemberService;
+import com.study.market.member.domain.*;
+import com.study.market.member.domain.RequestLoginDto;
+import com.study.market.member.domain.RequestSignUpDto;
+import com.study.market.member.service.MemberService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

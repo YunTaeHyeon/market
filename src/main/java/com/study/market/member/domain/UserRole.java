@@ -1,4 +1,4 @@
-package com.study.market.domain;
+package com.study.market.member.domain;
 
 import com.study.market.auth.AppAuthentication;
 import lombok.Getter;

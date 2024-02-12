@@ -1,7 +1,7 @@
 package com.study.market.manageMember;
 
-import com.study.market.domain.Member;
-import com.study.market.repository.MemberRepository;
+import com.study.market.member.domain.entity.Member;
+import com.study.market.member.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

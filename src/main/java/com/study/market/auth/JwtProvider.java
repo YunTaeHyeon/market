@@ -1,14 +1,13 @@
 package com.study.market.auth;
 
 import com.study.market.auth.exception.ExpiredTokenException;
-import com.study.market.domain.Member;
-import com.study.market.domain.UserRole;
+import com.study.market.member.domain.entity.Member;
+import com.study.market.member.domain.UserRole;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;

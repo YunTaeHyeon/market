@@ -1,10 +1,9 @@
-package com.study.market.controller;
+package com.study.market.member.controller;
 
-import com.study.market.domain.RequestLoginDto;
-import com.study.market.domain.RequestSignUpDto;
-import com.study.market.domain.ResponseLoginDto;
-import com.study.market.repository.MemberRepository;
-import com.study.market.service.MemberService;
+import com.study.market.member.domain.RequestLoginDto;
+import com.study.market.member.domain.ResponseLoginDto;
+import com.study.market.member.domain.RequestSignUpDto;
+import com.study.market.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

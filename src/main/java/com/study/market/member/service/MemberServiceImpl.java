@@ -1,20 +1,16 @@
-package com.study.market.service;
+package com.study.market.member.service;
 
 import com.study.market.auth.AuthenticationToken;
-import com.study.market.auth.JwtAuthentication;
 import com.study.market.auth.JwtProvider;
-import com.study.market.domain.Member;
-import com.study.market.domain.ResponseLoginDto;
-import com.study.market.domain.UserRole;
-import com.study.market.repository.MemberRepository;
+import com.study.market.member.domain.entity.Member;
+import com.study.market.member.domain.ResponseLoginDto;
+import com.study.market.member.domain.UserRole;
+import com.study.market.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor

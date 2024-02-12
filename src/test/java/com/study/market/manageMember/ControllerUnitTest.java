@@ -2,12 +2,10 @@ package com.study.market.manageMember;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.market.auth.JwtProvider;
-import com.study.market.controller.MemberController;
-import com.study.market.domain.RequestLoginDto;
-import com.study.market.domain.RequestSignUpDto;
-import com.study.market.repository.MemberRepository;
-import com.study.market.service.MemberService;
-import org.aspectj.lang.annotation.After;
+import com.study.market.member.controller.MemberController;
+import com.study.market.member.domain.RequestLoginDto;
+import com.study.market.member.domain.RequestSignUpDto;
+import com.study.market.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 

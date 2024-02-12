@@ -1,6 +1,6 @@
 package com.study.market.auth;
 
-import com.study.market.domain.UserRole;
+import com.study.market.member.domain.UserRole;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 

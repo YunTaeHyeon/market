@@ -1,6 +1,6 @@
 package com.study.market.auth;
 
-import com.study.market.domain.UserRole;
+import com.study.market.member.domain.UserRole;
 import org.springframework.security.core.Authentication;
 
 public interface AppAuthentication extends Authentication {
