@@ -26,5 +26,4 @@ public class Order {
     private List<OrderItem> orderItems = new ArrayList<>();
 
     private LocalDateTime localDateTime;
-
 }
