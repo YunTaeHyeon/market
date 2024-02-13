@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Table(name="item_in_cart")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ItemInCart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,12 +26,11 @@ public class ItemInCart {
 
     private int count;
 
-    public void matchCart(Cart cart) {
+    @Builder
+    public ItemInCart(Cart cart, Item item, int count){
         this.cart = cart;
-    }
-
-    public void matchItem(Item item) {
         this.item = item;
+        this.count = count;
     }
 }
 //하나의 상품이 여러 장바구니에 들어갈 수 있음

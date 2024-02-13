@@ -8,7 +8,7 @@ import lombok.*;
 @Entity
 @Table(name="cart")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,8 @@ public class Cart {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public void matchMember(Member member) {
+    @Builder //되는지 안되는지 모름
+    public Cart(Member member){
         this.member = member;
     }
 }

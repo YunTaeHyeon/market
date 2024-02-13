@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ItemController {
     private final ItemService itemService;
 
-    @PostMapping("/item/register")
+    @PostMapping("/item/register") //상품 등록
     public void registerItem(@RequestBody RequestRegisterDto requestRegisterDto){
         itemService.saveItem(requestRegisterDto.getItemName(),
                 requestRegisterDto.getPrice(),
@@ -21,4 +21,5 @@ public class ItemController {
                 requestRegisterDto.getItemDetail(),
                 requestRegisterDto.getItemStatus());
     }
+
 }
