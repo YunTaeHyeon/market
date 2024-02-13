@@ -69,4 +69,27 @@ public class ManageItemTest {
         assertThat(item).isEqualTo(itemB); //내용을 비교
         assertThat(item).isSameAs(itemB); //주소값을 비교
     }
+    @Test
+    @DisplayName("상품 이름 변경2")
+    void changeItemName2(){
+        //given
+        Item item = itemRepository.save(Item.builder()
+                .id(1L)
+                .itemName("itemA")
+                .price(10000)
+                .stockNumber(1)
+                .itemDetail(".")
+                .itemStatus(ItemStatus.SELL)
+                .build());
+
+        //when
+        item.changeItemName("itemB");
+
+        Item itemB=itemRepository.findByItemName("itemB")
+                .orElseThrow(()-> new RuntimeException("no Item"));
+
+        //then
+        assertThat(item).isEqualTo(itemB); //내용을 비교
+        assertThat(item).isSameAs(itemB); //주소값을 비교
+    }
 }

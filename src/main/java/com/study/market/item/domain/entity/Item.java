@@ -39,4 +39,8 @@ public class Item {
         this.itemDetail = itemDetail;
         this.itemStatus = itemStatus;
     }
+
+    public void changeItemName(String itemName){
+        this.itemName = itemName;
+    }
 }
