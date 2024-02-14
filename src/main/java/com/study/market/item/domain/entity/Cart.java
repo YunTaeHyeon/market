@@ -19,7 +19,7 @@ public class Cart {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Builder //되는지 안되는지 모름
+    @Builder
     public Cart(Member member){
         this.member = member;
     }

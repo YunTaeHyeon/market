@@ -4,6 +4,8 @@ import com.study.market.item.domain.ItemStatus;
 import com.study.market.item.domain.entity.Cart;
 import com.study.market.item.domain.entity.Item;
 import com.study.market.item.domain.entity.ItemInCart;
+import com.study.market.item.repository.CartItemRepository;
+import com.study.market.item.repository.CartRepository;
 import com.study.market.item.repository.ItemRepository;
 import com.study.market.member.domain.entity.Member;
 import com.study.market.member.repository.MemberRepository;
@@ -18,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class ItemServiceImpl implements ItemService{
     private final ItemRepository itemRepository;
     private final MemberRepository memberRepository;
+    private final CartItemRepository cartItemRepository;
+    private final CartRepository cartRepository;
 
     @Transactional
     @Override //상품 등록
@@ -35,25 +39,42 @@ public class ItemServiceImpl implements ItemService{
 
         itemRepository.save(item);
     }
-
+    @Transactional
     @Override
-    public void addCart(String email, String itemName) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(()->new IllegalArgumentException("해당 이메일이 존재하지 않습니다."));
+    public void addCart(Long itemId, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이메일이 존재하지 않습니다."));
 
-        Item item = itemRepository.findByItemName(itemName)
-                .orElseThrow(()->new IllegalArgumentException("해당 아이템이 없습니다."));
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
 
-        Cart cart = Cart.builder()
-                .member(member)
-                .build();
+        Cart cart = cartRepository.findByMemberId(member.getId());
 
-        ItemInCart itemInCart = ItemInCart.builder()
-                .cart(cart)
-                .item(item)
-                .count(item.getStockNumber())
-                .build();
-    } //여기 서비스 로직까지 작성
+        if (cart == null) {
+            cart = Cart.builder()
+                    .member(member)
+                    .build();
 
+            log.info("cart: {}", cart);
 
+            cartRepository.save(cart);
+        }
+
+        ItemInCart saveItemInCart = cartItemRepository.findByCartIdAndItemId(cart.getId(), item.getId());
+
+        if (saveItemInCart != null) {
+            saveItemInCart.addCount(saveItemInCart.getCount());
+        } else {
+            ItemInCart itemInCart = ItemInCart.builder()
+                    .cart(cart)
+                    .item(item)
+                    .count(1)
+                    .build();
+
+            log.info("itemInCart: {}", itemInCart);
+
+            cartItemRepository.save(itemInCart);
+        }
+
+    }
 }

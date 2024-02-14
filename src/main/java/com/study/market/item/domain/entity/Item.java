@@ -43,4 +43,8 @@ public class Item {
     public void changeItemName(String itemName){
         this.itemName = itemName;
     }
+
+    public void minusStockNumber(){
+        this.stockNumber -= 1;
+    }
 }

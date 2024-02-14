@@ -26,6 +26,10 @@ public class ItemInCart {
 
     private int count;
 
+    public void addCount(int count){
+        this.count = count+1;
+    }
+
     @Builder
     public ItemInCart(Cart cart, Item item, int count){
         this.cart = cart;
