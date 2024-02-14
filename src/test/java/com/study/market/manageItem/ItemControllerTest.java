@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 @SpringBootTest
@@ -98,7 +99,7 @@ public class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        org.assertj.core.api.Assertions.assertThat(itemInCart.getCount()).isEqualTo(2);
+        assertThat(itemInCart.getCount()).isEqualTo(2);
     }
 
     @Test
@@ -132,6 +133,6 @@ public class ItemControllerTest {
         ItemInCart itemInCart = cartItemRepository.findByCartIdAndItemId(
                 cartRepository.findByMemberId(member.getId()).getId(), item.getId());
 
-        org.assertj.core.api.Assertions.assertThat(itemInCart.getCount()).isEqualTo(10);
+        assertThat(itemInCart.getCount()).isEqualTo(10);
     }
 }
