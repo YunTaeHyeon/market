@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.market.auth.JwtProvider;
 import com.study.market.item.domain.ItemStatus;
 import com.study.market.item.domain.RequestAddItemInCartDto;
+import com.study.market.item.domain.RequestRegisterDto;
+import com.study.market.item.domain.entity.Cart;
 import com.study.market.item.domain.entity.Item;
 import com.study.market.item.domain.entity.ItemInCart;
+import com.study.market.item.domain.entity.OrderItem;
 import com.study.market.item.repository.CartItemRepository;
 import com.study.market.item.repository.CartRepository;
 import com.study.market.item.repository.ItemRepository;
@@ -26,8 +29,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -121,8 +127,7 @@ public class ItemControllerTest {
                         .build()
         );
 
-        //when & then
-
+        //when
         for(int i=0; i<10; i++) {
             mockMvc.perform(MockMvcRequestBuilders.post("/item/cart")
                             .with(csrf())
@@ -133,6 +138,78 @@ public class ItemControllerTest {
         ItemInCart itemInCart = cartItemRepository.findByCartIdAndItemId(
                 cartRepository.findByMemberId(member.getId()).getId(), item.getId());
 
+        //then
         assertThat(itemInCart.getCount()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("멤버의 장바구니 페이지 조회")
+    void 장바구니조회() throws Exception{
+        //given
+        itemService.saveItem("item",10000,1,"a",ItemStatus.SELL);
+        itemService.saveItem("itemB",10002,1,"b",ItemStatus.SELL);
+
+        memberService.join("yun","t@h","1234");
+
+        Member member = memberRepository.findByEmail("t@h").orElseThrow();
+        Item item = itemRepository.findByItemName("item").orElseThrow();
+        Item itemB = itemRepository.findByItemName("itemB").orElseThrow();
+
+
+        //when&then
+        String body = objectMapper.writeValueAsString(
+                RequestAddItemInCartDto.builder()
+                        .itemId(item.getId())
+                        .memberId(member.getId())
+                        .build()
+        );
+
+        String bodyB = objectMapper.writeValueAsString(
+                RequestAddItemInCartDto.builder()
+                        .itemId(itemB.getId())
+                        .memberId(member.getId())
+                        .build()
+        );
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/item/cart")
+                    .with(csrf())
+                    .content(body)
+                    .contentType(MediaType.APPLICATION_JSON));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/item/cart")
+                .with(csrf())
+                .content(bodyB)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/item/cart/my-page?userId=1")
+                .with(csrf())
+                )//.param("userId", String.valueOf(member.getId())))
+                .andDo(print()); //id 1인것과 2인것 만들어진거 확인
+
+
+        //then
+
+        //assertThat(itemInCarts.get(0).getItem()).isSameAs(item); 서비스 로직에서 변수 받았을 때
+        //assertThat(itemInCarts.get(1).getItem()).isSameAs(itemB);
+    }
+
+    @Test
+    @DisplayName("주문 생성하기")
+    void 주문생성() throws Exception{
+        //given
+        itemService.saveItem("item",10000,1,"a",ItemStatus.SELL);
+
+        memberService.join("yun","t@h","1234");
+
+        Member member = memberRepository.findByEmail("t@h").orElseThrow();
+        Item item = itemRepository.findByItemName("item").orElseThrow();
+
+        //when
+        OrderItem orderItem = itemService.createOrder(item.getId(), member.getId(), 1);
+
+        //then
+        assertThat(orderItem.getItem()).isSameAs(item);
+        assertThat(orderItem.getOrderPrice()).isEqualTo(10000);
     }
 }

@@ -44,7 +44,7 @@ public class Item {
         this.itemName = itemName;
     }
 
-    public void minusStockNumber(){
-        this.stockNumber -= 1;
+    public void minusStockNumber(int count){
+        this.stockNumber -= count;
     }
 }

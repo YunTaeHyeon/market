@@ -26,11 +26,8 @@ public class ControllerIntegrationTest {
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private MemberService memberService;
-
-
 
     @Test
     @DisplayName("회원가입 테스트")

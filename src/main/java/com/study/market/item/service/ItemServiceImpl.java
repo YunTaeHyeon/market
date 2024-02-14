@@ -1,9 +1,7 @@
 package com.study.market.item.service;
 
 import com.study.market.item.domain.ItemStatus;
-import com.study.market.item.domain.entity.Cart;
-import com.study.market.item.domain.entity.Item;
-import com.study.market.item.domain.entity.ItemInCart;
+import com.study.market.item.domain.entity.*;
 import com.study.market.item.repository.CartItemRepository;
 import com.study.market.item.repository.CartRepository;
 import com.study.market.item.repository.ItemRepository;
@@ -13,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -76,5 +77,39 @@ public class ItemServiceImpl implements ItemService{
             cartItemRepository.save(itemInCart);
         }
 
+    }
+
+    @Override
+    public List<ItemInCart> retrieveCart(Long memberId) {
+        Cart cart = cartRepository.findByMemberId(memberId);
+
+        log.info("retrieve "+cart.getMember().getEmail());
+
+        return cartItemRepository.findAllByCartId(cart.getMember().getId());
+    }
+
+    @Override
+    public OrderItem createOrder(Long itemId, Long memberId, int count) { //몇개 주문할건지
+        Item item = itemRepository.findById(itemId).orElseThrow(()-> new IllegalArgumentException("아이템이 존재하지 않습니다."));
+        Member member = memberRepository.findById(memberId).orElseThrow(()-> new IllegalArgumentException("멤버가 존재하지 않습니다."));
+
+        Order order = new Order();
+        order.matchMember(member);
+
+        OrderItem orderItem = OrderItem.builder()
+                .order(order)
+                .orderPrice(item.getPrice()*count)
+                .item(item)
+                .count(count)
+                .build();
+
+        if(item.getStockNumber() < count){
+            throw new RuntimeException("재고가 부족합니다.");
+        }else {
+            item.minusStockNumber(count);
+        }
+        log.info("orderItem: {}", orderItem);
+
+        return orderItem;
     }
 }

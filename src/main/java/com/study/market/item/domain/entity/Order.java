@@ -26,4 +26,9 @@ public class Order {
     private List<OrderItem> orderItems = new ArrayList<>();
 
     private LocalDateTime localDateTime;
+
+    public void matchMember(Member member){
+        this.member = member;
+    }
+
 }
