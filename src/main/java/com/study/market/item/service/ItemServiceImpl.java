@@ -5,6 +5,7 @@ import com.study.market.item.domain.entity.*;
 import com.study.market.item.repository.CartItemRepository;
 import com.study.market.item.repository.CartRepository;
 import com.study.market.item.repository.ItemRepository;
+import com.study.market.item.repository.ReplyRepository;
 import com.study.market.member.domain.entity.Member;
 import com.study.market.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class ItemServiceImpl implements ItemService{
     private final MemberRepository memberRepository;
     private final CartItemRepository cartItemRepository;
     private final CartRepository cartRepository;
+    private final ReplyRepository replyRepository;
 
     @Transactional
     @Override //상품 등록
@@ -112,4 +114,37 @@ public class ItemServiceImpl implements ItemService{
 
         return orderItem;
     }
+
+    @Override
+    public Reply addReply(Long memberId, Long itemId, String content) {
+        Member member = memberRepository.findById(memberId).orElseThrow(()->new IllegalArgumentException("유저가 존재하지 않습니다."));
+        Item item = itemRepository.findById(itemId).orElseThrow(()->new IllegalArgumentException("상품이 존재하지 않습니다."));
+
+        Reply reply = Reply.builder()
+                .member(member)
+                .item(item)
+                .content(content)
+                .build();
+
+        reply.matchItem(item);
+
+        replyRepository.save(reply);
+
+        return reply;
+    }
+
+    @Override
+    public Reply modifyReply(Long itemId ,Long replyId, String content) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(()-> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
+
+        Reply reply = replyRepository.findById(replyId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다."));
+
+        reply.changeContent(content);
+        reply.matchItem(item);
+
+        return reply;
+    }
+
 }

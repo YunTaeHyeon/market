@@ -5,13 +5,11 @@ import com.study.market.auth.JwtProvider;
 import com.study.market.item.domain.ItemStatus;
 import com.study.market.item.domain.RequestAddItemInCartDto;
 import com.study.market.item.domain.RequestRegisterDto;
-import com.study.market.item.domain.entity.Cart;
-import com.study.market.item.domain.entity.Item;
-import com.study.market.item.domain.entity.ItemInCart;
-import com.study.market.item.domain.entity.OrderItem;
+import com.study.market.item.domain.entity.*;
 import com.study.market.item.repository.CartItemRepository;
 import com.study.market.item.repository.CartRepository;
 import com.study.market.item.repository.ItemRepository;
+import com.study.market.item.repository.ReplyRepository;
 import com.study.market.item.service.ItemService;
 import com.study.market.member.domain.entity.Member;
 import com.study.market.member.repository.MemberRepository;
@@ -32,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
@@ -62,7 +61,8 @@ public class ItemControllerTest {
     private CartRepository cartRepository;
     @Autowired
     private JwtProvider jwtProvider;
-
+    @Autowired
+    private ReplyRepository replyRepository;
 
     @Test
     @DisplayName("장바구니에 담기 테스트")
@@ -182,9 +182,9 @@ public class ItemControllerTest {
                 .content(bodyB)
                 .contentType(MediaType.APPLICATION_JSON));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/item/cart/my-page?userId=1")
+        mockMvc.perform(MockMvcRequestBuilders.get("/item/cart/my-page")
                 .with(csrf())
-                )//.param("userId", String.valueOf(member.getId())))
+                .param("userId", String.valueOf(member.getId())))
                 .andDo(print()); //id 1인것과 2인것 만들어진거 확인
 
 
@@ -211,5 +211,47 @@ public class ItemControllerTest {
         //then
         assertThat(orderItem.getItem()).isSameAs(item);
         assertThat(orderItem.getOrderPrice()).isEqualTo(10000);
+    }
+
+    @Test
+    @DisplayName("댓글 생성하기")
+    void 댓글달기() throws Exception{
+        //given
+        itemService.saveItem("item",10000,1,"a",ItemStatus.SELL);
+
+        memberService.join("yun","t@h","1234");
+
+        Member member = memberRepository.findByEmail("t@h").orElseThrow();
+        Item item = itemRepository.findByItemName("item").orElseThrow();
+
+        //when
+        Reply reply = itemService.addReply(member.getId(), item.getId(), "최고에요");
+
+        //then
+        assertThat(reply.getContent()).isEqualTo("최고에요");
+        assertThat(reply).isSameAs(item.getReplyList().get(0));
+    }
+
+    @Test
+    @DisplayName("댓글 수정하기")
+    void 댓글수정() throws Exception{
+        //given
+        itemService.saveItem("item",10000,1,"a",ItemStatus.SELL);
+
+        memberService.join("yun","t@h","1234");
+
+        Member member = memberRepository.findByEmail("t@h").orElseThrow();
+        Item item = itemRepository.findByItemName("item").orElseThrow();
+
+        //when
+        Reply reply = itemService.addReply(member.getId(), item.getId(), "최고에요");
+
+        reply.matchItem(item);
+
+        itemService.modifyReply(item.getId(), reply.getId(), "최악이에요");
+
+        //then
+        assertThat(reply.getContent()).isEqualTo("최악이에요");
+        assertThat(item.getReplyList().get(0)).isEqualTo(reply);
     }
 }

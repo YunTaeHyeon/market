@@ -4,10 +4,13 @@ import com.study.market.item.domain.ItemStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "item")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Item {
     @Id
     @Column(name = "item_id")
@@ -29,6 +32,13 @@ public class Item {
 
     @Enumerated(EnumType.STRING)
     private ItemStatus itemStatus;
+
+    @OneToMany(mappedBy = "item")
+    private List<Reply> replyList = new ArrayList<>();
+
+    public void addReply(Reply reply){
+        this.replyList.add(reply);
+    }
 
     @Builder(toBuilder = true)
     public Item(long id, String itemName, int price, int stockNumber, String itemDetail, ItemStatus itemStatus){
