@@ -6,8 +6,10 @@ import com.study.market.member.domain.entity.Member;
 import com.study.market.member.domain.ResponseLoginDto;
 import com.study.market.member.domain.UserRole;
 import com.study.market.member.repository.MemberRepository;
+import com.study.market.redis.RedisService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class MemberServiceImpl implements MemberService{
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
+    private final RedisService redisService;
 
     @Transactional
     @Override
@@ -50,6 +53,12 @@ public class MemberServiceImpl implements MemberService{
         }
 
         AuthenticationToken token = jwtProvider.issue(member);
+
+        Long durationToMilli = jwtProvider.getRefreshExpiration().toMillis();
+        //duration으로 되어있는걸 Milli로 포멧팅
+        redisService.setStringValue(token.getRefreshToken(), member.getEmail(), durationToMilli);
+        //redis에 저장
+
         return new ResponseLoginDto(token);
     }
 

@@ -34,6 +34,11 @@ public class JwtProvider implements AuthenticationTokenProvider{
     //secret key
     @Value("${app.auth.jwt.secret-key}")
     private String secretKey;
+
+    public Duration getRefreshExpiration(){
+        return refreshExpiration;
+    } //refreshToken 만료시간을 redis에도 주기 위해서 -> redis에 있으면 코드에선 refreshToken의 만료 시간이 이제 필요 없지 않을까?
+
     @Override
     public String getAccessTokenFromHeader(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
