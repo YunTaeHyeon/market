@@ -2,11 +2,13 @@ package com.study.market.member.service;
 
 import com.study.market.auth.AuthenticationToken;
 import com.study.market.auth.JwtProvider;
+import com.study.market.member.domain.ResponseRefreshTokenDto;
 import com.study.market.member.domain.entity.Member;
 import com.study.market.member.domain.ResponseLoginDto;
 import com.study.market.member.domain.UserRole;
 import com.study.market.member.repository.MemberRepository;
 import com.study.market.redis.RedisService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -60,6 +62,18 @@ public class MemberServiceImpl implements MemberService{
         //redis에 저장
 
         return new ResponseLoginDto(token);
+    }
+
+    public ResponseRefreshTokenDto refreshToken(HttpServletRequest request, String refreshToken) {
+        String accessToken = jwtProvider.getAccessTokenFromHeader(request);
+        AuthenticationToken token = jwtProvider.reissue(accessToken, refreshToken);
+        return new ResponseRefreshTokenDto(token);
+    }
+
+    @Override
+    public Member findMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(()->new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
     }
 
 }

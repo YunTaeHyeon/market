@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+      <h2 class="mb-4">Login</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" id="loginButton">Login</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const baseURL = "http://localhost:8080";
+
+    function onLogin(email, password) {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", `${baseURL}/login`);
+      xhr.setRequestHeader("Content-Type", "application/json");
+
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          const response = JSON.parse(xhr.responseText);
+          const accessToken = response.accessToken;
+          //header에 항상 OAuth 2.0인 authorization: Bearer accessToken 추가하고 가져오는 코드
+          localStorage.setItem("accessToken", accessToken);
+            //가져오는 코드
+          const accessToken1 = localStorage.getItem("accessToken");
+          alert(accessToken1);
+
+          // 여기에 accessToken을 사용하여 추가 작업 수행
+          //alert("로그인 성공!");
+          // board.html로 리다이랙션
+          window.location.href = "/board.html";
+        } else {
+          console.error("로그인 실패:", xhr.statusText);
+          alert("이메일이나 비밀번호를 확인해주세요");
+        }
+      };
+
+      xhr.onerror = function() {
+        console.error("로그인 실패:", xhr.statusText);
+        alert("이메일이나 비밀번호를 확인해주세요");
+      };
+
+      const data = JSON.stringify({ email: email, password: password });
+      xhr.send(data);
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      onLogin(email, password);
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -2,6 +2,8 @@ package com.study.market;
 
 import com.study.market.auth.CustomAuthenticationEntryPoint;
 import com.study.market.auth.JwtAuthenticationFilter;
+import com.study.market.auth.UserAuthNames;
+import com.study.market.member.domain.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +28,10 @@ public class SecurityConfig {
             "/**", "/swagger-ui/**", "/api-docs/**", "/test/**"
     };
 
+    private static final String[] USER_URI = {
+            "/board", "/item"
+    };
+
     private static final String[] ADMIN_URI = {
             "/admin/**"
     };
@@ -39,6 +45,7 @@ public class SecurityConfig {
                 )
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
+                                .requestMatchers(USER_URI).authenticated()
                                 .requestMatchers(PUBLIC_URI).permitAll()
                                 .requestMatchers(ADMIN_URI).permitAll()
                 )

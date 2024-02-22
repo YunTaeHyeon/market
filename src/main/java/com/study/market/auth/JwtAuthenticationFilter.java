@@ -25,11 +25,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
 
         String accessToken = authenticationTokenProvider.getAccessTokenFromHeader(request);
+        System.out.println("accesstoken"+ accessToken);
         if (accessToken != null) {
             Authentication authentication = authenticationTokenProvider.getAuthentication(accessToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-
+        System.out.println("accessToken = " + accessToken);
+        System.out.println("requestmapper"+requestWrapper);
+        System.out.println("responseWrapper = " + responseWrapper);
 
 
         filterChain.doFilter(requestWrapper, responseWrapper);

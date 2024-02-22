@@ -17,7 +17,7 @@ public class MemberController {
         memberService.join(dto.getName(),dto.getEmail(),dto.getPassword());
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login") //Post로 수정
     public ResponseLoginDto login(@RequestBody RequestLoginDto dto){
         return memberService.login(dto.getEmail(), dto.getPassword());
     }

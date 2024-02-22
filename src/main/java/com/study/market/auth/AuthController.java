@@ -1,12 +1,12 @@
 package com.study.market.auth;
 
+import com.study.market.member.domain.RequestRefreshTokenDto;
+import com.study.market.member.domain.ResponseRefreshTokenDto;
 import com.study.market.member.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.xml.transform.Result;
 
@@ -17,7 +17,10 @@ public class AuthController {
     private final MemberService memberService;
     private final JwtProvider jwtProvider;
 
-    //@GetMapping("/reissue")
-    //public ResponseEntity<Result> refreshToken(@RequestHeader("X-AUTH-TOKEN"))
-    //ToDo: 쿠키 공부 후 JWT를 쿠키로 만들어서 reissue 할 것.
+    @PostMapping("/reissue")
+    @UserAuth
+    public ResponseRefreshTokenDto refreshToken(HttpServletRequest request,
+                                                @RequestBody RequestRefreshTokenDto dto) {
+        return memberService.refreshToken(request, dto.getRefreshToken());
+    }
 }
