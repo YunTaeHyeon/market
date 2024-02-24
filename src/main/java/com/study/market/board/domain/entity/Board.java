@@ -1,4 +1,4 @@
-package com.study.market.board.domain;
+package com.study.market.board.domain.entity;
 
 import com.study.market.member.domain.entity.Member;
 import jakarta.persistence.*;

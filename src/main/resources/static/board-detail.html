@@ -15,6 +15,15 @@
             <p class="card-text" id="boardContent"></p>
             <p class="card-text" id="boardWriter"></p>
             <p class="card-text" id="boardViewCount"></p>
+            <!-- 삭제와 수정 버튼 추가 -->
+            <div class="row">
+                <div class="col-auto">
+                    <button class="btn btn-danger" id="deleteButton">삭제</button>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary" id="editButton" style="display: none;">수정</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -23,11 +32,10 @@
     // URL에서 쿼리 매개변수 id를 가져옵니다.
     const urlParams = new URLSearchParams(window.location.search);
     const boardId = urlParams.get('id');
-    // 게시물 정보를 가져오는 함수
-
     // 로컬 스토리지에서 AccessToken 가져오기
     const accessToken = localStorage.getItem("accessToken");
 
+    // 게시물 정보를 가져오는 함수
     function getBoardDetail() {
         // GET 요청 보내기
         fetch(`http://localhost:8080/board/retrieve/${boardId}`, {
@@ -48,12 +56,51 @@
                 document.getElementById("boardContent").textContent = data.content;
                 document.getElementById("boardWriter").textContent = `작성자: ${data.writer}`;
                 document.getElementById("boardViewCount").textContent = `조회수: ${data.viewCount}`;
+                // isWriter가 true이면 삭제 버튼 표시 및 수정 버튼 표시
+                if (data.isWriter === "true") {
+                    document.getElementById("deleteButton").style.display = "block";
+                    document.getElementById("editButton").style.display = "block";
+                } else {
+                    // isWriter가 false이면 삭제 버튼 숨김
+                    document.getElementById("deleteButton").style.display = "none";
+                }
             })
             .catch(error => {
                 console.error("Error:", error);
                 alert("게시물을 가져오는 데 실패했습니다.");
             });
     }
+
+    // 삭제 버튼 클릭 시 처리
+    document.getElementById("deleteButton").addEventListener("click", function() {
+        if (confirm("정말로 삭제하시겠습니까?")) {
+            // DELETE 요청 보내기
+            fetch(`http://localhost:8080/board/delete/${boardId}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    alert("게시물이 삭제되었습니다.");
+                    // 삭제 후 리다이렉트
+                    window.location.href = "board.html";
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("게시물 삭제 중 오류가 발생했습니다.");
+                });
+        }
+    });
+
+    // 수정 버튼 클릭 시 처리
+    document.getElementById("editButton").addEventListener("click", function() {
+        // 작성자가 수정 버튼을 클릭하면 board-modify.html로 리다이렉트
+        window.location.href = "board-modify.html?id=" + boardId;
+    });
 
     // 페이지 로드 시 게시물 정보를 가져오기
     window.onload = getBoardDetail;

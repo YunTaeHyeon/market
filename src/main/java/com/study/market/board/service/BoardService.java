@@ -1,9 +1,8 @@
 package com.study.market.board.service;
 
-import com.study.market.board.domain.Board;
 import com.study.market.board.domain.ResponseRetrieveBoardDto;
+import com.study.market.board.domain.entity.Board;
 
-import java.util.List;
 import java.util.Map;
 
 public interface BoardService {
