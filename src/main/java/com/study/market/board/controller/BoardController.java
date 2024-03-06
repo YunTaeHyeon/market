@@ -35,8 +35,8 @@ public class BoardController {
     //이제는 사용하지 않음
 
     @GetMapping("/board/page/count")
-    public Long boardPageCount(Pageable pageable) {
-        return boardService.paging(pageable).getTotalElements();
+    public int boardPageCount(Pageable pageable) {
+        return boardService.paging(pageable).getTotalPages();
     }
     @GetMapping("/board/page")
     public Map<Long, String> pagingBoard(@PageableDefault(page = 1)Pageable pageable) {

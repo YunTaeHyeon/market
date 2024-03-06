@@ -60,7 +60,7 @@
         })
             .then(response => response.json())
             .then(data => {
-                const pageCount = Math.ceil(data / 10); // 페이지당 10개씩 표시하도록 가정
+                const pageCount = data
                 createPagination(pageCount);
             })
             .catch(error => console.error("Error:", error));
