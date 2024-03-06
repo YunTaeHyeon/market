@@ -1,15 +1,21 @@
 package com.study.market.board.service;
 
 import com.study.market.auth.SecurityUtil;
+import com.study.market.board.domain.PostsRequestDto;
 import com.study.market.board.domain.entity.Board;
 import com.study.market.board.domain.ResponseRetrieveBoardDto;
 import com.study.market.board.repository.BoardRepository;
+import com.study.market.board.repository.PostsRepository;
 import com.study.market.item.repository.ItemRepository;
 import com.study.market.member.domain.entity.Member;
 import com.study.market.member.repository.MemberRepository;
 import com.study.market.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +31,7 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
+    private final PostsRepository postsRepository;
 
     @Override
     @Transactional
@@ -120,6 +127,20 @@ public class BoardServiceImpl implements BoardService {
                 .build();
     }
 
+    @Override
+    public Page<PostsRequestDto> paging(Pageable pageable){
+        int page = pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber() - 1;
+        int pageLimit = 10; //한 페이지에 보여줄 게시글 수
 
+        Page<Board> boardPage = postsRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
+        //board_id를 기준으로 내림차순 정렬
+
+        Page<PostsRequestDto> postsRequestDtoPage = boardPage.map(PostsRequestDto::new);
+
+        //Page<PostsRequestDto> postsRequestDtoPage = boardPage.map(board -> new PostsRequestDto(board));
+        //위와 같은 코드
+
+        return postsRequestDtoPage;
+    }
 
 }

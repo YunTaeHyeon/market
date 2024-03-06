@@ -2,6 +2,7 @@ package com.study.market.board.controller;
 
 import com.study.market.auth.JwtProvider;
 import com.study.market.auth.SecurityUtil;
+import com.study.market.board.domain.PostsRequestDto;
 import com.study.market.board.domain.entity.Board;
 import com.study.market.board.domain.RequestWriteBoardDto;
 import com.study.market.board.domain.ResponseRetrieveBoardDto;
@@ -10,9 +11,13 @@ import com.study.market.member.domain.entity.Member;
 import com.study.market.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +32,27 @@ public class BoardController {
     public Map<Long ,String> boardList() {
         return boardService.retrieveBoardList();
     }
+    //이제는 사용하지 않음
+
+    @GetMapping("/board/page/count")
+    public Long boardPageCount(Pageable pageable) {
+        return boardService.paging(pageable).getTotalElements();
+    }
+    @GetMapping("/board/page")
+    public Map<Long, String> pagingBoard(@PageableDefault(page = 1)Pageable pageable) {
+        Page<PostsRequestDto> paging = boardService.paging(pageable);
+
+        Map<Long, String> map = new LinkedHashMap<>();
+
+        for (PostsRequestDto postsRequestDto : paging) {
+            map.put(postsRequestDto.getId(), postsRequestDto.getTitle());
+        }
+
+        log.info("map : {}", map);
+
+        return map;
+    }
+
 
     @PostMapping("/board/write")
     public void writeBoard(@RequestBody RequestWriteBoardDto dto) {
